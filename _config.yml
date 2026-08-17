@@ -1,0 +1,5 @@
+# GitHub Pages (Jekyll) beállítás.
+# Az archiv/ mappa a repóban marad, de a publikált weboldalra nem kerül ki.
+exclude:
+  - archiv/
+  - PUBLIKALAS.md

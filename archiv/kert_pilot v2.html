@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Klímatűrő kert – növénykalauz</title>
+<style>
+  :root{
+    --green-900:#1b4332;
+    --green-700:#2d6a4f;
+    --green-500:#40916c;
+    --green-300:#95d5b2;
+    --green-100:#e9f7ef;
+    --amber-700:#92400e;
+    --amber-600:#b45309;
+    --amber-100:#fef3c7;
+    --red-700:#b91c1c;
+    --red-100:#fee2e2;
+    --blue-600:#2563eb;
+    --ink:#1f2a24;
+    --muted:#5b6b62;
+    --paper:#fbfaf7;
+    --card:#ffffff;
+    --border:#e3e8e2;
+    --shadow:0 1px 2px rgba(27,67,50,.06), 0 6px 20px rgba(27,67,50,.07);
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:"Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    line-height:1.5;
+  }
+  a{color:var(--green-700);}
+
+  header.top{
+    background:linear-gradient(135deg, var(--green-900), var(--green-700));
+    color:#fff;
+    padding:26px 20px 22px;
+  }
+  header.top .wrap{
+    max-width:1180px;margin:0 auto;
+    display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap;
+  }
+  header.top h1{margin:0 0 6px; font-size:1.55rem;}
+  header.top p.sub{margin:0; color:#dff2e6; max-width:66ch; font-size:.93rem;}
+  .byline{
+    font-size:.78rem;color:#b7dcc6;text-align:right;white-space:nowrap;
+    padding-top:4px;letter-spacing:.01em;
+  }
+  .byline strong{color:#e8f6ee;font-weight:600;}
+
+  .pilot-note{
+    max-width:1180px;margin:14px auto 0; background:var(--amber-100); color:#7c4a03;
+    border:1px solid #f3d38a; border-radius:10px; padding:10px 14px; font-size:.87rem;
+  }
+
+  nav.tabs{
+    max-width:1180px;margin:18px auto 0; display:flex; gap:4px; padding:0 20px;
+    border-bottom:1px solid var(--border);flex-wrap:wrap;
+  }
+  nav.tabs button{
+    background:none;border:none;cursor:pointer;font-size:.93rem;font-weight:600;
+    padding:10px 15px;color:var(--muted);border-bottom:3px solid transparent;
+  }
+  nav.tabs button:hover{color:var(--green-700);}
+  nav.tabs button.active{color:var(--green-900);border-bottom-color:var(--green-700);}
+  nav.tabs button .n{
+    font-size:.72rem;background:var(--green-100);color:var(--green-700);
+    padding:1px 7px;border-radius:20px;margin-left:6px;font-weight:700;
+  }
+  nav.tabs button.warn.active{border-bottom-color:var(--amber-600);color:var(--amber-700);}
+  nav.tabs button.warn .n{background:var(--amber-100);color:var(--amber-700);}
+  nav.tabs button.danger.active{border-bottom-color:var(--red-700);color:var(--red-700);}
+  nav.tabs button.danger .n{background:var(--red-100);color:var(--red-700);}
+
+  main{max-width:1180px;margin:0 auto;padding:20px;}
+  section.tabpanel{display:none;}
+  section.tabpanel.active{display:block;}
+
+  .toolbar{
+    display:flex;flex-wrap:wrap;gap:10px;align-items:center;
+    background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+    padding:14px;margin-bottom:14px;box-shadow:var(--shadow);
+  }
+  .toolbar input[type=search]{
+    flex:1 1 200px;padding:9px 12px;border:1px solid var(--border);border-radius:8px;font-size:.92rem;
+  }
+  .toolbar select{
+    padding:8px 10px;border:1px solid var(--border);border-radius:8px;font-size:.86rem;background:#fff;color:var(--ink);
+  }
+  .btn-reset{
+    padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:#fff;
+    font-size:.84rem;cursor:pointer;color:var(--muted);
+  }
+  .btn-reset:hover{background:var(--green-100);color:var(--green-700);}
+  .count-line{font-size:.85rem;color:var(--muted);margin:0 2px 14px;}
+  .empty{
+    padding:30px;text-align:center;color:var(--muted);font-size:.9rem;
+    background:var(--card);border:1px dashed var(--border);border-radius:var(--radius);
+  }
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(265px,1fr));gap:16px;}
+  .card{
+    background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+    overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column;
+  }
+  .card .imgwrap{position:relative;aspect-ratio:4/3;background:var(--green-100);overflow:hidden;}
+  .card .imgwrap img{width:100%;height:100%;object-fit:cover;display:block;}
+  .card .credit{
+    position:absolute;bottom:0;right:0;left:0;background:rgba(15,30,20,.6);color:#fff;
+    font-size:.67rem;padding:3px 7px;text-align:right;
+  }
+  .card .credit a{color:#fff;text-decoration:underline;}
+  .badges{position:absolute;top:8px;left:8px;display:flex;gap:5px;flex-wrap:wrap;max-width:calc(100% - 16px);}
+  .badge{
+    font-size:.68rem;font-weight:700;padding:3px 9px;border-radius:20px;letter-spacing:.02em;
+    border:none;cursor:pointer;font-family:inherit;box-shadow:0 1px 3px rgba(0,0,0,.25);
+  }
+  .badge:hover{filter:brightness(1.12);}
+  .badge.native{background:var(--green-500);color:#fff;}
+  .badge.nonnative{background:var(--blue-600);color:#fff;}
+  .badge.toxic{background:#111827;color:#fbbf24;}
+  .badge.woody{background:#7c3f1d;color:#fff;}
+  .badge.herb{background:#4d7c0f;color:#fff;}
+  .badge.static{cursor:default;box-shadow:none;}
+
+  .card .body{padding:14px 14px 16px;display:flex;flex-direction:column;gap:8px;flex:1;}
+  .card h3{margin:0;font-size:1.05rem;line-height:1.25;}
+  .card h3 .latin{display:block;font-style:italic;font-weight:400;color:var(--muted);font-size:.85rem;margin-top:3px;}
+  .tags{display:flex;flex-wrap:wrap;gap:5px;}
+  .tag{
+    font-size:.72rem;background:var(--green-100);color:var(--green-900);padding:2px 8px;
+    border-radius:20px;border:1px solid var(--green-300);
+  }
+  .kerulendo .tag{background:#f3f4f6;color:#374151;border-color:#d1d5db;}
+
+  dl.facts{margin:4px 0 0;font-size:.82rem;display:grid;grid-template-columns:auto 1fr;gap:4px 10px;}
+  dl.facts dt{color:var(--muted);font-weight:600;white-space:nowrap;}
+  dl.facts dd{margin:0;}
+
+  .quote{
+    margin-top:auto;padding-top:10px;border-top:1px dashed var(--border);
+    font-size:.77rem;color:var(--muted);font-style:italic;
+  }
+  .srcline{font-size:.7rem;color:#8a978f;margin-top:5px;}
+  .why{
+    font-size:.84rem;background:var(--red-100);border:1px solid #f3b4b4;
+    border-radius:8px;padding:9px 11px;color:#7f1d1d;
+  }
+  .why.decl{background:var(--amber-100);border-color:#f3d38a;color:#7c4a03;}
+  .figyelem{
+    font-size:.79rem;background:#f3f4f6;border:1px solid #d1d5db;
+    border-radius:8px;padding:7px 10px;color:#374151;
+  }
+  .alt{
+    font-size:.8rem;background:var(--green-100);border:1px solid var(--green-300);
+    border-radius:8px;padding:8px 11px;color:var(--green-900);
+  }
+  .alt strong{color:var(--green-700);}
+
+  .lead{
+    background:var(--card);border:1px solid var(--border);border-left:4px solid var(--green-700);
+    border-radius:var(--radius);padding:14px 18px;margin-bottom:18px;box-shadow:var(--shadow);
+    font-size:.9rem;color:var(--muted);max-width:none;
+  }
+  .lead.warn{border-left-color:var(--amber-600);}
+  .lead.danger{border-left-color:var(--red-700);}
+  .lead strong{color:var(--ink);}
+
+  .source-box{
+    background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+    padding:18px 20px;box-shadow:var(--shadow);margin-bottom:18px;
+  }
+  .source-box h3{margin-top:0;color:var(--green-900);font-size:1.05rem;}
+  .source-box p{font-size:.9rem;}
+  .comment-block{
+    background:#f7faf8;border:1px solid var(--border);border-radius:10px;
+    padding:14px 16px;font-size:.86rem;margin-top:10px;
+  }
+  .comment-block h4{margin:14px 0 6px;font-size:.9rem;color:var(--green-900);}
+  .comment-block h4:first-child{margin-top:0;}
+  .comment-block ol{margin:0;padding-left:22px;}
+  .comment-block li{margin-bottom:3px;}
+  .comment-block li i{color:var(--muted);}
+  .comment-meta{font-size:.78rem;color:var(--muted);margin-bottom:10px;}
+  .fb-embed{margin-top:12px;}
+  .fb-embed iframe{max-width:100%;}
+  table.srctable{width:100%;border-collapse:collapse;font-size:.84rem;margin-top:8px;}
+  table.srctable th, table.srctable td{
+    text-align:left;padding:7px 9px;border-bottom:1px solid var(--border);vertical-align:top;
+  }
+  table.srctable th{color:var(--muted);font-weight:600;background:#f7faf8;}
+  .flag{
+    display:inline-block;font-size:.68rem;font-weight:700;padding:1px 7px;border-radius:20px;
+  }
+  .flag.a{background:var(--green-100);color:var(--green-700);border:1px solid var(--green-300);}
+  .flag.b{background:#dbeafe;color:#1d4ed8;border:1px solid #93c5fd;}
+  .flag.c{background:var(--amber-100);color:var(--amber-700);border:1px solid #f3d38a;}
+
+  footer{max-width:1180px;margin:20px auto 40px;padding:0 20px;color:var(--muted);font-size:.79rem;}
+
+  @media (max-width:640px){
+    header.top .wrap{flex-direction:column;gap:10px;}
+    .byline{text-align:left;}
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <div>
+      <h1>Klímatűrő, víztakarékos kert – növénykalauz</h1>
+      <p class="sub">Bardóczi Sándor főtájépítész TOP 100-as és TOP 20-as (invazív) listája alapján, a 24.hu / Sokszínű vidék 2026.08.17-i cikke nyomán.</p>
+    </div>
+    <div class="byline">Készítette:<br><strong>Udvari István</strong> · Adatelemző</div>
+  </div>
+</header>
+
+<div class="pilot-note">
+  🌱 <strong>Pilóta verzió – 17 mintanövénnyel</strong> (8 ajánlott, 3 nem fenntartható, 6 invazív) a formátum és a szűrők egyeztetésére, mielőtt mind a ~127 fajra elkészül a teljes anyag.
+</div>
+
+<nav class="tabs">
+  <button class="tab-btn active" data-tab="ajanlott">Ajánlott növények <span class="n" id="n-ajanlott"></span></button>
+  <button class="tab-btn warn" data-tab="fenntart">Már nem fenntartható <span class="n" id="n-decl"></span></button>
+  <button class="tab-btn danger" data-tab="invaziv">Invazív – ne telepítsd <span class="n" id="n-inv"></span></button>
+  <button class="tab-btn" data-tab="forras">Forrás &amp; módszertan</button>
+</nav>
+
+<main>
+
+  <!-- ===== AJÁNLOTT ===== -->
+  <section class="tabpanel active" id="tab-ajanlott">
+    <div class="lead">
+      <strong>Fontos:</strong> a szárazságtűrés a <strong>már begyökeresedett</strong> növényre vonatkozik. Beültetés után minden növény igényli az extra öntözést — fák és cserjék több évig, évelők legalább az első évben.
+    </div>
+    <div class="toolbar">
+      <input type="search" id="search" placeholder="Keresés név szerint…">
+      <select id="f-kategoria"><option value="">Kategória (mind)</option></select>
+      <select id="f-meret"><option value="">Méret (mind)</option></select>
+      <select id="f-feny"><option value="">Fényigény (mind)</option></select>
+      <select id="f-viz"><option value="">Vízigény (mind)</option></select>
+      <select id="f-eredet">
+        <option value="">Eredet (mind)</option>
+        <option value="native">Őshonos</option>
+        <option value="nonnative">Nem inváziós</option>
+      </select>
+      <select id="f-toxic">
+        <option value="">Mérgezőség (mind)</option>
+        <option value="no">Csak nem mérgező</option>
+        <option value="yes">Csak mérgező</option>
+      </select>
+      <button class="btn-reset" id="reset">Szűrők törlése</button>
+    </div>
+    <div class="count-line" id="count-ajanlott"></div>
+    <div class="grid" id="grid-ajanlott"></div>
+    <div class="empty" id="empty-ajanlott" style="display:none">Nincs a szűrőknek megfelelő növény.</div>
+  </section>
+
+  <!-- ===== NEM FENNTARTHATÓ ===== -->
+  <section class="tabpanel" id="tab-fenntart">
+    <div class="lead warn">
+      <strong>Régen népszerű, ma már nem fenntartható.</strong> Ezek nem inváziósak — a gond az, hogy nagy és folyamatos a vízigényük, ezért a mai aszályos nyarakon tömegesen pusztulnak. A cikk szerint ezeknek „vége a korszaka”. Nem kell azonnal kivágni őket: a javaslat a <em>fokozatos csere</em>.
+    </div>
+    <div class="toolbar">
+      <input type="search" id="search-decl" placeholder="Keresés név szerint…">
+      <button class="btn-reset" id="reset-decl">Szűrők törlése</button>
+    </div>
+    <div class="count-line" id="count-decl"></div>
+    <div class="grid" id="grid-decl"></div>
+    <div class="empty" id="empty-decl" style="display:none">Nincs a szűrőknek megfelelő növény.</div>
+  </section>
+
+  <!-- ===== INVAZÍV ===== -->
+  <section class="tabpanel" id="tab-invaziv">
+    <div class="lead danger">
+      <strong>Új telepítésként nem ajánlott.</strong> Inváziós fajok: könnyen kiszabadulnak a kertből, és a hazai élőhelyeket, biológiai sokféleséget károsítják. Több közülük <strong>uniós jegyzékes</strong>, amelyek telepítése és forgalmazása jogszabályba ütközik.
+    </div>
+    <div class="toolbar">
+      <input type="search" id="search-inv" placeholder="Keresés név szerint…">
+      <select id="f-szar">
+        <option value="">Szár típusa (mind)</option>
+        <option value="Fásszárú">Fásszárú</option>
+        <option value="Lágyszárú">Lágyszárú</option>
+      </select>
+      <select id="f-eu">
+        <option value="">Uniós jegyzék (mind)</option>
+        <option value="yes">Csak uniós jegyzékes</option>
+      </select>
+      <button class="btn-reset" id="reset-inv">Szűrők törlése</button>
+    </div>
+    <div class="count-line" id="count-inv"></div>
+    <div class="grid" id="grid-inv"></div>
+    <div class="empty" id="empty-inv" style="display:none">Nincs a szűrőknek megfelelő növény.</div>
+  </section>
+
+  <!-- ===== FORRÁS ===== -->
+  <section class="tabpanel" id="tab-forras">
+
+    <div class="source-box">
+      <h3>A cikk</h3>
+      <p>Bardóczi Sándor főtájépítész, tájépítészeti osztályvezető TOP 100-as (klímatűrő, víztakarékos) növénylistája, valamint a TOP 20-as invazív, kerülendő lista.</p>
+      <p>Forrás: <a href="https://sokszinuvidek.24.hu/kertunk-portank/2026/08/17/kert-noveny-klimavaltozas-aszaly-hoseg/" target="_blank" rel="noopener">Elérkezett a szárazságtűrő kertépítés kora: itt a top 100-as lista</a> — Sokszínű vidék / 24.hu, 2026. 08. 17.</p>
+    </div>
+
+    <div class="source-box">
+      <h3>Az eredeti Facebook-bejegyzés</h3>
+      <p>Bardóczi Sándor eredeti közösségi médiás bejegyzése, amelyre a cikk épül:</p>
+      <div class="fb-embed">
+        <iframe src="https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2Fsandor.bardoczi%2Fposts%2Fpfbid0b2bJpSzT8kK5njYtyAW9bakt8uAJc28JJPKr9zxds5vatrVStaGUc4VUNmwr13Rbl&show_text=true&width=500" width="500" height="582" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
+      </div>
+    </div>
+
+    <div class="source-box">
+      <h3>A TOP 20 invazív lista – a szerző kommentje</h3>
+      <p class="comment-meta">Bardóczi Sándor (szerző) hozzászólása a fenti bejegyzéshez — az „Invazív” fül teljes forrása:</p>
+      <div class="comment-block">
+        <p style="margin-top:0"><em>„TOP20 invazív lista, amivel a kertünkből ütjük agyon a biológiai sokféleséget”</em></p>
+
+        <h4>Kerülendő fás szárúak</h4>
+        <ol>
+          <li><i>Ailanthus altissima</i> – mirigyes bálványfa: rendkívül agresszíven sarjadzó, uniós jegyzékes özönfa.</li>
+          <li><i>Robinia pseudoacacia</i> – fehér akác: gyökérsarjakkal terjed, nitrogéndúsítással átalakítja az élőhelyeket.</li>
+          <li><i>Acer negundo</i> – zöld juhar: főként ártereken és vízpartokon terjed tömegesen.</li>
+          <li><i>Fraxinus pennsylvanica</i> – amerikai kőris: ártéri erdőkben kiszorítja az őshonos fafajokat.</li>
+          <li><i>Prunus serotina</i> – kései meggy: erdőkben sűrű második lombkoronaszintet képez.</li>
+          <li><i>Celtis occidentalis</i> – nyugati ostorfa: madarak terjesztik, száraz erdőkben és városi területeken terjed.</li>
+          <li><i>Elaeagnus angustifolia</i> – keskenylevelű ezüstfa: száraz gyepeket, homoki és szikes élőhelyeket foglal el.</li>
+          <li><i>Amorpha fruticosa</i> – gyalogakác: ártereken és vízpartokon összefüggő cserjéseket alkot.</li>
+          <li><i>Rhus typhina</i> – ecetfa: erősen sarjadzik, a kertből könnyen kijut.</li>
+          <li><i>Quercus rubra</i> – vörös tölgy: erdőkben spontán újul, avarja és árnyékolása átalakítja az aljnövényzetet.</li>
+        </ol>
+
+        <h4>Kerülendő lágyszárúak</h4>
+        <ol start="11">
+          <li><i>Asclepias syriaca</i> – közönséges selyemkóró: tarackokkal terjedő, uniós jegyzékes özönnövény.</li>
+          <li><i>Solidago canadensis</i> – kanadai aranyvessző: gyepeket és parlagokat borít el.</li>
+          <li><i>Solidago gigantea</i> – magas aranyvessző: nedvesebb gyepekben és ártereken alkot állományokat.</li>
+          <li><i>Reynoutria japonica</i> – japánkeserűfű: rizómatöredékből is regenerálódik, kiirtása rendkívül nehéz.</li>
+          <li><i>Reynoutria sachalinensis</i> – óriáskeserűfű: hatalmas, fajszegény állományokat képez.</li>
+          <li><i>Impatiens glandulifera</i> – bíbor nebáncsvirág: vízfolyások mentén gyorsan terjedő, uniós jegyzékes faj.</li>
+          <li><i>Phytolacca americana</i> – amerikai alkörmös: erdőkben és bolygatott területeken terjed; mérgező.</li>
+          <li><i>Echinocystis lobata</i> – süntök: egyéves kúszónövényként elborítja a vízparti növényzetet.</li>
+          <li><i>Heracleum mantegazzianum</i> – kaukázusi medvetalp: uniós jegyzékes; nedve súlyos fényérzékeny bőrgyulladást okozhat.</li>
+          <li><i>Cenchrus setaceus</i> – afrikai tollborzfű: uniós jegyzékes inváziós díszfű; telepítése és forgalmazása tilos.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="source-box">
+      <h3>Honnan származnak az adatok?</h3>
+      <p>A kártyákon szereplő információk <strong>három, eltérő megbízhatóságú forrásból</strong> állnak össze. Ezt fontos külön jelölni, mert nem egyforma a súlyuk:</p>
+      <table class="srctable">
+        <tr><th>Jelölés</th><th>Mit takar</th><th>Megbízhatóság</th></tr>
+        <tr>
+          <td><span class="flag a">cikk</span></td>
+          <td>A dőlt betűs idézet a kártya alján, valamint az Ő/I (őshonos / nem inváziós) besorolás és a kategóriába sorolás.</td>
+          <td>Közvetlenül a szakértő szerzőtől — ez a legerősebb.</td>
+        </tr>
+        <tr>
+          <td><span class="flag b">Wikipédia</span></td>
+          <td>Elsősorban a méretadatok, a lombhullató/örökzöld jelleg, és néhány kemény tény (pl. mérgező hatóanyag, terjedési mód).</td>
+          <td>Jó, de a Wikipédia botanikai és nem kertészeti forrás — sok mezőt egyszerűen nem tartalmaz.</td>
+        </tr>
+        <tr>
+          <td><span class="flag c">szintézis</span></td>
+          <td>A fényigény- és vízigény-besorolás, a talaj, a növekedési erély, a beporzóbarát jelleg és a felhasználási javaslat.</td>
+          <td><strong>Ez a leggyengébb láncszem.</strong> Részben a cikk rövid megjegyzéséből, részben általános kertészeti ismeretből származik — nem egyetlen, hivatkozható adatbázisból.</td>
+        </tr>
+      </table>
+      <p style="margin-bottom:0"><strong>Javaslat a teljes, 127 fajos verzióhoz:</strong> a „szintézis” mezőket érdemes lenne egy valódi, strukturált kertészeti adatbázisból feltölteni — erre a legjobb ingyenes forrás a <a href="https://www.missouribotanicalgarden.org/plantfinder/plantfindersearch.aspx" target="_blank" rel="noopener">Missouri Botanical Garden Plant Finder</a> (fajonként egységes méret-, fény-, víz- és zónaadat), illetve az <a href="https://www.rhs.org.uk/plants/search-form" target="_blank" rel="noopener">RHS Plant Finder</a>. Így minden mező mögött konkrét hivatkozás állna a mostani vegyes megoldás helyett.</p>
+    </div>
+
+    <div class="source-box">
+      <h3>Növényképek</h3>
+      <p style="margin-bottom:0">A fotók a Wikimedia Commons szabad felhasználású állományából származnak (CC BY, CC BY-SA, illetve GFDL licenc alatt). Minden kép alatt fel van tüntetve a fotós neve és a licenc, a névre kattintva pedig megnyílik az eredeti Commons-fájllap a teljes licencfeltételekkel.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  Pilóta verzió. A cikk szövegét nem másoljuk szó szerint — a növényneveket, kategóriákat és a rövid, dőlt betűs jellemzéseket dolgozzuk fel, kiegészítve más forrásokból származó adatokkal (lásd: Forrás &amp; módszertan).
+</footer>
+
+<script>
+const IMG = p => "https://upload.wikimedia.org" + p;
+
+/* Sorrendek — a szűrőlisták ezek szerint épülnek fel, nem ábécésorrendben. */
+const ORDER_FENY  = ["Tűző nap","Napos","Napos–félárnyék","Félárnyék","Félárnyék–árnyék","Árnyék"];
+const ORDER_VIZ   = ["Nagyon alacsony","Alacsony","Alacsony–közepes","Közepes"];
+const ORDER_MERET = [
+  "XS · 50 cm alatt",
+  "S · 0,5–1,5 m",
+  "M · 1,5–4 m",
+  "L · 4–10 m",
+  "XL · 10 m felett"
+];
+const ORDER_KAT = ["Örökzöld","Lombhullató fa","Cserje","Napos évelő","Árnyéki talajtakaró","Kúszónövény","Gyeppótló"];
+
+const PLANTS = [
+  {
+    id:"juniperus-communis",
+    hu:"Közönséges boróka", lat:"Juniperus communis",
+    kategoria:"Örökzöld", feny:"Napos", viz:"Alacsony", meret:"M · 1,5–4 m",
+    eredet:"native", toxic:false,
+    meretTxt:"Fajtától függően 1–10 m; kertekben jellemzően alacsony vagy elterülő fajták",
+    talaj:"Száraz, akár sovány is",
+    lomb:"Örökzöld",
+    novekedes:"Lassú; formája erősen fajtafüggő (oszlopos vagy elterülő)",
+    beporzo:"Nem jellemző (szélbeporzású)",
+    hasznalat:"Alacsony fenntartású sziklakertbe, elterülő fajtákkal talajtakarónak",
+    idezet:"„napos, száraz helyre”",
+    img:IMG("/wikipedia/commons/thumb/7/73/Juniperus_communis.jpg/960px-Juniperus_communis.jpg"),
+    credit:"Pasqdnik", license:"GFDL",
+    creditUrl:"https://commons.wikimedia.org/wiki/File:Juniperus_communis.jpg"
+  },
+  {
+    id:"taxus-baccata",
+    hu:"Közönséges tiszafa", lat:"Taxus baccata",
+    kategoria:"Örökzöld", feny:"Félárnyék", viz:"Alacsony–közepes", meret:"L · 4–10 m",
+    eredet:"native", toxic:true,
+    meretTxt:"10–20 m is lehet, de rendkívül jól tűri a nyírást — sövényként 1,5–3 m-en tartható",
+    talaj:"Széles tűrés, de a pangó vizet nem viseli el",
+    lomb:"Örökzöld",
+    novekedes:"Lassú; cserébe nagyon hosszú életű és jól visszavágható",
+    beporzo:"Nem jellemző (szélbeporzású)",
+    hasznalat:"Nyírott örökzöld sövény, formára metszett szoliter — a tuja legjobb hazai kiváltója",
+    figyelem:"A magköpenyt kivéve minden része erősen mérgező (taxin) — kisgyerekes, illetve legelő állatot tartó kertbe nem való.",
+    idezet:"„napra vagy árnyékba; mérgező”",
+    img:IMG("/wikipedia/commons/thumb/3/31/Taxus_baccata_MHNT.jpg/960px-Taxus_baccata_MHNT.jpg"),
+    credit:"Didier Descouens", license:"CC BY-SA 4.0",
+    creditUrl:"https://commons.wikimedia.org/wiki/File:Taxus_baccata_MHNT.jpg"
+  },
+  {
+    id:"tilia-tomentosa",
+    hu:"Ezüsthárs", lat:"Tilia tomentosa",
+    kategoria:"Lombhullató fa", feny:"Napos–félárnyék", viz:"Alacsony–közepes", meret:"XL · 10 m felett",
+    eredet:"native", toxic:false,
+    meretTxt:"20–35 m magas, nagy, terebélyes koronájú",
+    talaj:"Széles tűrés; jól bírja a talajtömörödést és a városi körülményeket",
+    lomb:"Lombhullató",
+    novekedes:"Közepes–gyors; idővel nagyon nagy koronát nevel",
+    beporzo:"Igen, jelentős méhlegelő",
+    hasznalat:"Nagy kertbe, utcafásításra, árnyékadó fának",
+    idezet:"„nagy, jó hő- és szárazságtűrő fa”",
+    img:IMG("/wikipedia/commons/thumb/8/8d/Tilia_tomentosa.jpg/960px-Tilia_tomentosa.jpg"),
+    credit:"Bruce Marlin", license:"CC BY 3.0",
+    creditUrl:"https://commons.wikimedia.org/wiki/File:Tilia_tomentosa.jpg"
+  },
+  {
+    id:"cotinus-coggygria",
+    hu:"Cserszömörce", lat:"Cotinus coggygria",
+    kategoria:"Cserje", feny:"Tűző nap", viz:"Alacsony", meret:"L · 4–10 m",
+    eredet:"native", toxic:false,
+    meretTxt:"5–7 m, laza, szétterülő habitus (metszéssel kisebben tartható)",
+    talaj:"Meszes, száraz, köves",
+    lomb:"Lombhullató",
+    novekedes:"Közepes; jellegzetes „parókaszerű” terméses virágzat",
+    beporzo:"Mérsékelten kedvelt",
+    hasznalat:"Dekoratív szoliter cserje, kiemelkedő őszi lombszínért",
+    idezet:"„tűző napra, meszes talajra”",
+    img:IMG("/wikipedia/commons/e/e9/Cotinus_coggygria%2C_2006-07-18.JPG"),
+    credit:"Algirdas (lt.wikipedia)", license:"GFDL",
+    creditUrl:"https://commons.wikimedia.org/wiki/File:Cotinus_coggygria,_2006-07-18.JPG"
+  },
+  {
+    id:"salvia-nemorosa",
+    hu:"Ligeti zsálya", lat:"Salvia nemorosa",
+    kategoria:"Napos évelő", feny:"Napos", viz:"Alacsony–közepes", meret:"S · 0,5–1,5 m",
+    eredet:"native", toxic:false,
+    meretTxt:"kb. 40–60 cm, bokros tövű évelő",
+    talaj:"Jó vízelvezetésű; begyökeresedve szárazságtűrő",
+    lomb:"Lágyszárú évelő",
+    novekedes:"Gyors; nyáron hosszan virágzik (lila, kék-lila, rózsaszín, fehér)",
+    beporzo:"Igen, kiváló méhlegelő",
+    hasznalat:"Virágágyás, szegélynövény, természetközeli kiültetés",
+    idezet:"„hosszan virágzó”",
+    img:IMG("/wikipedia/commons/thumb/9/96/Salvia_nemorosa_OB10.jpg/960px-Salvia_nemorosa_OB10.jpg"),
+    credit:"Jerzy Opioła", license:"CC BY-SA 4.0",
+    creditUrl:"https://commons.wikimedia.org/wiki/File:Salvia_nemorosa_OB10.jpg"
+  },
+  {
+    id:"geranium-macrorrhizum",
+    hu:"Illatos gólyaorr", lat:"Geranium macrorrhizum",
+    kategoria:"Árnyéki talajtakaró", feny:"Félárnyék–árnyék", viz:"Alacsony", meret:"XS · 50 cm alatt",
+    eredet:"nonnative", toxic:false,
+    meretTxt:"kb. 30–40 cm magas, gyorsan összefüggő szőnyeggé záródik",
+    talaj:"Száraz, humuszos is megfelel",
+    lomb:"Lombhullató, illatos levelű",
+    novekedes:"Gyors terjedésű talajtakaró",
+    beporzo:"Mérsékelten kedvelt",
+    hasznalat:"Fák alá, száraz árnyékos zugokba, gyomelnyomónak",
+    idezet:"„kiváló száraz árnyéki faj”",
+    img:IMG("/wikipedia/commons/thumb/f/f8/Geranium_macrorrhizum003.jpg/960px-Geranium_macrorrhizum003.jpg"),
+    credit:"Meneerke bloem", license:"GFDL",
+    creditUrl:"https://commons.wikimedia.org/wiki/File:Geranium_macrorrhizum003.jpg"
+  },
+  {
+    id:"parthenocissus-tricuspidata",
+    hu:"Tapadó vadszőlő", lat:"Parthenocissus tricuspidata",
+    kategoria:"Kúszónövény", feny:"Napos–félárnyék", viz:"Közepes", meret:"XL · 10 m felett",
+    eredet:"nonnative", toxic:false,
+    meretTxt:"Megfelelő felületen akár 30 m-re felkúszhat",
+    talaj:"Széles tűrés",
+    lomb:"Lombhullató; kiemelkedő skarlát-narancs őszi lombszín",
+    novekedes:"Erős; tapadókorongokkal önállóan, támrendszer nélkül kúszik",
+    beporzo:"Mérsékelt",
+    hasznalat:"Falak befuttatására — nyáron érdemi árnyékoló, hőcsökkentő hatással",
+    idezet:"„falak befuttatására”",
+    img:IMG("/wikipedia/commons/thumb/5/52/Parthenocissus_tricuspidata%2C_Boston_ivy%2C_in_autumn_colours.JPG/960px-Parthenocissus_tricuspidata%2C_Boston_ivy%2C_in_autumn_colours.JPG"),
+    credit:"Rowan Adams", license:"CC BY-SA 4.0",
+    creditUrl:"https://commons.wikimedia.org/wiki/File:Parthenocissus_tricuspidata,_Boston_ivy,_in_autumn_colours.JPG"
+  },
+  {
+    id:"thymus-serpyllum",
+    hu:"Keskenylevelű kakukkfű", lat:"Thymus serpyllum",
+    kategoria:"Gyeppótló", feny:"Napos", viz:"Nagyon alacsony", meret:"XS · 50 cm alatt",
+    eredet:"native", toxic:false,
+    meretTxt:"kb. 5–10 cm magas, szőnyegszerűen terjed",
+    talaj:"Sovány, köves, homokos is megfelel",
+    lomb:"Lágyszárú, tövénél fásodó",
+    novekedes:"Gyors terjedésű; mérsékelt taposást tűr",
+    beporzo:"Igen, kiváló méhlegelő (lepkéknek is)",
+    hasznalat:"Gyeppótló napos, száraz, ritkán járt felületeken",
+    idezet:"„ritkán taposott napos helyre”",
+    img:IMG("/wikipedia/commons/thumb/2/2f/Thymus_serpyllum.JPG/960px-Thymus_serpyllum.JPG"),
+    credit:"MurielBendel", license:"CC BY-SA 4.0",
+    creditUrl:"https://commons.wikimedia.org/wiki/File:Thymus_serpyllum.JPG"
+  }
+];
+
+const DECLINING = [
+  {
+    id:"thuja-occidentalis",
+    hu:"Nyugati tuja", lat:"Thuja occidentalis",
+    toxic:true,
+    meretTxt:"Természetes alakjában 10–15 m; kertekben jellemzően 2–4 m-es nyírt sövény",
+    why:"Eredeti élőhelye a nedves erdő és a láperdő — nagy és folyamatos vízigénye van. Aszályos nyarakon tömegesen barnul el és pusztul, mégis évtizedekig ez volt a legnépszerűbb sövénynövény. Tujont tartalmaz, ami mérgező.",
+    idezet:"„A thuja […] korszak vége.”",
+    alternativa:"Boróka (<i>Juniperus</i>) vagy más szárazságtűrő örökzöld, illetve nyírható lombhullató sövény: fagyal, galagonya",
+    img:IMG("/wikipedia/commons/thumb/8/80/Thuja_occidentalis_003.JPG/960px-Thuja_occidentalis_003.JPG"),
+    credit:"H. Zell", license:"GFDL",
+    creditUrl:"https://commons.wikimedia.org/wiki/File:Thuja_occidentalis_003.JPG"
+  },
+  {
+    id:"picea-abies",
+    hu:"Lucfenyő", lat:"Picea abies",
+    toxic:false,
+    meretTxt:"30–50 m magas, sekélyen gyökerező nagy fa",
+    why:"Hegyvidéki, hűvös és párás klíma fája — az alföldi meleg, száraz nyarak alapvetően nem felelnek meg neki. Sekély gyökérzete miatt az aszályt rosszul viseli, a legyengült fák pedig szúbogár-fertőzésnek esnek áldozatul.",
+    idezet:"„…lucfenyő […] korszak vége.”",
+    alternativa:"Erdei fenyő (<i>Pinus sylvestris</i>) vagy páncélfenyő (<i>Pinus heldreichii</i>) a top100 listáról",
+    img:IMG("/wikipedia/commons/thumb/9/9d/Kuusk_Keila-Paldiski_rdt_%C3%A4%C3%A4res.jpg/960px-Kuusk_Keila-Paldiski_rdt_%C3%A4%C3%A4res.jpg"),
+    credit:"Ivar Leidus", license:"CC BY-SA 3.0 ee",
+    creditUrl:"https://commons.wikimedia.org/wiki/File:Kuusk_Keila-Paldiski_rdt_%C3%A4%C3%A4res.jpg"
+  },
+  {
+    id:"betula-pendula",
+    hu:"Közönséges nyír", lat:"Betula pendula",
+    toxic:false,
+    meretTxt:"15–25 m magas, viszonylag rövid életű fa",
+    why:"Hűvösebb, csapadékosabb éghajlat fája, sekély gyökérzettel és nagy párologtatással. Tartós aszályban korán sárgul és lombot hullat, gyakran néhány év alatt le is pusztul — a hazai kertekben ma már kockázatos választás.",
+    idezet:"„…és nyírfa […] korszak vége.”",
+    alternativa:"Virágos kőris (<i>Fraxinus ornus</i>), tatár juhar (<i>Acer tataricum</i>) vagy sajmeggy (<i>Prunus mahaleb</i>)",
+    img:IMG("/wikipedia/commons/thumb/8/8a/Betula_pendula_Finland.jpg/960px-Betula_pendula_Finland.jpg"),
+    credit:"Percita (Flickr)", license:"CC BY-SA 2.0",
+    creditUrl:"https://commons.wikimedia.org/wiki/File:Betula_pendula_Finland.jpg"
+  }
+];
+
+const INVASIVE = [
+  {
+    id:"ailanthus-altissima", rank:1,
+    hu:"Mirigyes bálványfa", lat:"Ailanthus altissima",
+    szar:"Fásszárú", eu:true, toxic:true,
+    meretTxt:"17–27 m magas; nagyon gyors növekedésű, évi 1–2 m",
+    why:"Erőteljesen sarjadzik gyökérről, és allelopátiás anyagot (ailantont) termel, ami gátolja a környező növények megtelepedését. Sűrű, fajszegény állományokat hoz létre, visszavágás után pedig még erősebben újrasarjad. Gyökere mérgező, hím virágai kellemetlen szagúak.",
+    idezet:"„rendkívül agresszíven sarjadzó, uniós jegyzékes özönfa”",
+    img:IMG("/wikipedia/commons/8/8f/Ailanthus_altissima1.jpg"),
+    credit:"Kurt Stüber", license:"GFDL",
+    creditUrl:"https://commons.wikimedia.org/wiki/File:Ailanthus_altissima1.jpg"
+  },
+  {
+    id:"robinia-pseudoacacia", rank:2,
+    hu:"Fehér akác", lat:"Robinia pseudoacacia",
+    szar:"Fásszárú", eu:false, toxic:true,
+    meretTxt:"20–30 m magas, gyorsan növő fa",
+    why:"Gyökérsarjakkal terjed, és nitrogénmegkötő lévén feldúsítja a talaj tápanyagtartalmát — ezzel tartósan átalakítja az élőhelyet, kiszorítva a tápanyagszegény gyepekhez alkalmazkodott őshonos fajokat. Kérge és magja mérgező.",
+    idezet:"„gyökérsarjakkal terjed, nitrogéndúsítással átalakítja az élőhelyeket”",
+    img:IMG("/wikipedia/commons/8/86/Robina9146.JPG"),
+    credit:"Pollinator (en.wikipedia)", license:"CC BY-SA 3.0",
+    creditUrl:"https://commons.wikimedia.org/wiki/File:Robina9146.JPG"
+  },
+  {
+    id:"acer-negundo", rank:3,
+    hu:"Zöld juhar", lat:"Acer negundo",
+    szar:"Fásszárú", eu:false, toxic:false,
+    meretTxt:"10–20 m magas, rövid életű, törékeny ágrendszerű fa",
+    why:"Rendkívül sok, szél által messzire hordott termést hoz, és szinte bárhol csírázik. Főként ártereken, vízpartokon és bolygatott területeken terjed tömegesen, ahol sűrű állományaival elnyomja az őshonos fajokat.",
+    idezet:"„főként ártereken és vízpartokon terjed tömegesen”",
+    img:IMG("/wikipedia/commons/thumb/9/9a/Acer_negundo_44809168.jpg/960px-Acer_negundo_44809168.jpg"),
+    credit:"CK Kelly", license:"CC BY 4.0",
+    creditUrl:"https://commons.wikimedia.org/wiki/File:Acer_negundo_44809168.jpg"
+  },
+  {
+    id:"asclepias-syriaca", rank:11,
+    hu:"Közönséges selyemkóró", lat:"Asclepias syriaca",
+    szar:"Lágyszárú", eu:true, toxic:true,
+    meretTxt:"1–2 m magas, tarackokkal terjedő évelő",
+    why:"Föld alatti tarackokkal terjed, így egyetlen tőből is hatalmas folt alakul ki; emellett tollas repítőkészülékes magvai nagy távolságra jutnak el. Elsősorban homoki gyepeket és parlagokat foglal el. Tejnedve mérgező.",
+    idezet:"„tarackokkal terjedő, uniós jegyzékes özönnövény”",
+    img:IMG("/wikipedia/commons/thumb/7/77/Asclepias_syriacus.tif/lossy-page1-960px-Asclepias_syriacus.tif.jpg"),
+    credit:"Amos Oliver Doyle", license:"CC BY-SA 4.0",
+    creditUrl:"https://commons.wikimedia.org/wiki/File:Asclepias_syriacus.tif"
+  },
+  {
+    id:"solidago-canadensis", rank:12,
+    hu:"Kanadai aranyvessző", lat:"Solidago canadensis",
+    szar:"Lágyszárú", eu:false, toxic:false,
+    meretTxt:"1–2 m magas, sűrű állományt képző évelő",
+    why:"Egyetlen tő tízezres nagyságrendben hoz szélterjesztette magot, emellett tarackjaival is terjeszkedik. Gyepeket és parlagokat borít el összefüggő, egyfajú állományokkal. A szerző külön kiemeli mint elrettentő példát arra, hogyan válik egy kedvelt kerti dísznövényből országos gond.",
+    idezet:"„gyepeket és parlagokat borít el”",
+    img:IMG("/wikipedia/commons/thumb/2/26/Solidago_canadensis_20050815_248.jpg/960px-Solidago_canadensis_20050815_248.jpg"),
+    credit:"Georg Slickers", license:"CC BY-SA 4.0",
+    creditUrl:"https://commons.wikimedia.org/wiki/File:Solidago_canadensis_20050815_248.jpg"
+  },
+  {
+    id:"reynoutria-japonica", rank:14,
+    hu:"Japánkeserűfű", lat:"Reynoutria japonica",
+    szar:"Lágyszárú", eu:false, toxic:false,
+    meretTxt:"Hajtásai szezononként 3–4 m-t nőnek; 2–3 m magas, sűrű állomány",
+    why:"Rizómái vízszintesen akár 7 m-re, függőlegesen 3 m mélyre hatolnak, és apró gyökértöredékből is újraindulnak — ezért a kiirtása rendkívül nehéz. Képes megrongálni a burkolatot, épületalapot és a csatornát is.",
+    idezet:"„rizómatöredékből is regenerálódik, kiirtása rendkívül nehéz”",
+    img:IMG("/wikipedia/commons/thumb/a/a3/Reynoutria_japonica_02.JPG/960px-Reynoutria_japonica_02.JPG"),
+    credit:"AfroBrazilian", license:"CC BY-SA 3.0",
+    creditUrl:"https://commons.wikimedia.org/wiki/File:Reynoutria_japonica_02.JPG"
+  }
+];
+
+/* ---------- renderelés ---------- */
+const imgErr = "this.closest('.imgwrap').classList.add('noimg'); this.style.display='none';";
+
+function creditHTML(p){
+  return `<div class="credit">Kép: <a href="${p.creditUrl}" target="_blank" rel="noopener">${p.credit}</a>, Wikimedia Commons, ${p.license}</div>`;
+}
+
+function cardHTML(p){
+  const originBadge = p.eredet === "native"
+    ? `<button class="badge native" data-filter="eredet" data-value="native" title="Szűrés az őshonos fajokra">Őshonos</button>`
+    : `<button class="badge nonnative" data-filter="eredet" data-value="nonnative" title="Szűrés az idegenhonos, nem inváziós fajokra">Nem inváziós</button>`;
+  const toxicBadge = p.toxic
+    ? `<button class="badge toxic" data-filter="toxic" data-value="yes" title="Szűrés a mérgező fajokra">mérgező</button>` : ``;
+  return `
+  <div class="card" data-kategoria="${p.kategoria}" data-meret="${p.meret}" data-feny="${p.feny}" data-viz="${p.viz}" data-eredet="${p.eredet}" data-toxic="${p.toxic}" data-name="${(p.hu+" "+p.lat).toLowerCase()}">
+    <div class="imgwrap">
+      <img src="${p.img}" alt="${p.hu} (${p.lat})" loading="lazy" onerror="${imgErr}">
+      <div class="badges">${originBadge}${toxicBadge}</div>
+      ${creditHTML(p)}
+    </div>
+    <div class="body">
+      <h3>${p.hu}<span class="latin">${p.lat}</span></h3>
+      <div class="tags">
+        <span class="tag">${p.kategoria}</span>
+        <span class="tag">📏 ${p.meret}</span>
+        <span class="tag">☀ ${p.feny}</span>
+        <span class="tag">💧 ${p.viz}</span>
+      </div>
+      <dl class="facts">
+        <dt>Méret</dt><dd>${p.meretTxt}</dd>
+        <dt>Talaj</dt><dd>${p.talaj}</dd>
+        <dt>Lomb</dt><dd>${p.lomb}</dd>
+        <dt>Növekedés</dt><dd>${p.novekedes}</dd>
+        <dt>Beporzóbarát</dt><dd>${p.beporzo}</dd>
+        <dt>Felhasználás</dt><dd>${p.hasznalat}</dd>
+      </dl>
+      ${p.figyelem ? `<div class="figyelem">⚠ ${p.figyelem}</div>` : ``}
+      <div class="quote">${p.idezet} — Bardóczi Sándor listája</div>
+      <div class="srcline">Adatok: cikk + Wikipédia + kertészeti szintézis — lásd Forrás &amp; módszertan</div>
+    </div>
+  </div>`;
+}
+
+function declCardHTML(p){
+  const toxicBadge = p.toxic ? `<span class="badge toxic static">mérgező</span>` : ``;
+  return `
+  <div class="card kerulendo" data-name="${(p.hu+" "+p.lat).toLowerCase()}">
+    <div class="imgwrap">
+      <img src="${p.img}" alt="${p.hu} (${p.lat})" loading="lazy" onerror="${imgErr}">
+      <div class="badges">${toxicBadge}</div>
+      ${creditHTML(p)}
+    </div>
+    <div class="body">
+      <h3>${p.hu}<span class="latin">${p.lat}</span></h3>
+      <dl class="facts"><dt>Méret</dt><dd>${p.meretTxt}</dd></dl>
+      <div class="why decl">${p.why}</div>
+      <div class="alt"><strong>Helyette:</strong> ${p.alternativa}</div>
+      <div class="quote">${p.idezet} — a cikk nyitógondolata</div>
+    </div>
+  </div>`;
+}
+
+function invCardHTML(p){
+  const szarBadge = p.szar === "Fásszárú"
+    ? `<button class="badge woody" data-filter="szar" data-value="Fásszárú" title="Szűrés a fásszárúakra">Fásszárú</button>`
+    : `<button class="badge herb" data-filter="szar" data-value="Lágyszárú" title="Szűrés a lágyszárúakra">Lágyszárú</button>`;
+  const toxicBadge = p.toxic ? `<span class="badge toxic static">mérgező</span>` : ``;
+  return `
+  <div class="card kerulendo" data-szar="${p.szar}" data-eu="${p.eu}" data-name="${(p.hu+" "+p.lat).toLowerCase()}">
+    <div class="imgwrap">
+      <img src="${p.img}" alt="${p.hu} (${p.lat})" loading="lazy" onerror="${imgErr}">
+      <div class="badges">${szarBadge}${toxicBadge}</div>
+      ${creditHTML(p)}
+    </div>
+    <div class="body">
+      <h3>${p.hu}<span class="latin">${p.lat}</span></h3>
+      <div class="tags">
+        <span class="tag">TOP20 · #${p.rank}</span>
+        <span class="tag">${p.szar}</span>
+        ${p.eu ? `<span class="tag">⚠ uniós jegyzékes</span>` : ``}
+      </div>
+      <dl class="facts"><dt>Méret</dt><dd>${p.meretTxt}</dd></dl>
+      <div class="why">${p.why}</div>
+      <div class="quote">${p.idezet} — a szerző TOP20-as listája</div>
+    </div>
+  </div>`;
+}
+
+document.getElementById("grid-ajanlott").innerHTML = PLANTS.map(cardHTML).join("");
+document.getElementById("grid-decl").innerHTML     = DECLINING.map(declCardHTML).join("");
+document.getElementById("grid-inv").innerHTML      = INVASIVE.sort((a,b)=>a.rank-b.rank).map(invCardHTML).join("");
+
+document.getElementById("n-ajanlott").textContent = PLANTS.length;
+document.getElementById("n-decl").textContent     = DECLINING.length;
+document.getElementById("n-inv").textContent      = INVASIVE.length;
+
+/* ---------- szűrőlisták sorrendben ---------- */
+function fillOrdered(selId, order, present){
+  const sel = document.getElementById(selId);
+  order.filter(v => present.has(v)).forEach(v=>{
+    const o = document.createElement("option");
+    o.value = v; o.textContent = v;
+    sel.appendChild(o);
+  });
+}
+fillOrdered("f-kategoria", ORDER_KAT,   new Set(PLANTS.map(p=>p.kategoria)));
+fillOrdered("f-meret",     ORDER_MERET, new Set(PLANTS.map(p=>p.meret)));
+fillOrdered("f-feny",      ORDER_FENY,  new Set(PLANTS.map(p=>p.feny)));
+fillOrdered("f-viz",       ORDER_VIZ,   new Set(PLANTS.map(p=>p.viz)));
+
+/* ---------- fülek ---------- */
+document.querySelectorAll(".tab-btn").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+    document.querySelectorAll(".tabpanel").forEach(p=>p.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById("tab-"+btn.dataset.tab).classList.add("active");
+    window.scrollTo({top:0, behavior:"smooth"});
+  });
+});
+
+/* ---------- szűrés: ajánlott ---------- */
+function applyFilters(){
+  const q       = document.getElementById("search").value.trim().toLowerCase();
+  const kat     = document.getElementById("f-kategoria").value;
+  const meret   = document.getElementById("f-meret").value;
+  const feny    = document.getElementById("f-feny").value;
+  const viz     = document.getElementById("f-viz").value;
+  const eredet  = document.getElementById("f-eredet").value;
+  const toxic   = document.getElementById("f-toxic").value;
+  let visible = 0;
+  document.querySelectorAll("#grid-ajanlott .card").forEach(card=>{
+    let ok = true;
+    if(q && !card.dataset.name.includes(q)) ok = false;
+    if(kat    && card.dataset.kategoria !== kat)   ok = false;
+    if(meret  && card.dataset.meret     !== meret) ok = false;
+    if(feny   && card.dataset.feny      !== feny)  ok = false;
+    if(viz    && card.dataset.viz       !== viz)   ok = false;
+    if(eredet && card.dataset.eredet    !== eredet)ok = false;
+    if(toxic === "yes" && card.dataset.toxic !== "true") ok = false;
+    if(toxic === "no"  && card.dataset.toxic === "true") ok = false;
+    card.style.display = ok ? "" : "none";
+    if(ok) visible++;
+  });
+  document.getElementById("count-ajanlott").textContent = `${visible} / ${PLANTS.length} növény`;
+  document.getElementById("empty-ajanlott").style.display = visible ? "none" : "";
+}
+["search","f-kategoria","f-meret","f-feny","f-viz","f-eredet","f-toxic"].forEach(id=>{
+  document.getElementById(id).addEventListener("input", applyFilters);
+});
+document.getElementById("reset").addEventListener("click", ()=>{
+  ["f-kategoria","f-meret","f-feny","f-viz","f-eredet","f-toxic"].forEach(id=>document.getElementById(id).value="");
+  document.getElementById("search").value = "";
+  applyFilters();
+});
+
+/* ---------- szűrés: nem fenntartható ---------- */
+function applyDecl(){
+  const q = document.getElementById("search-decl").value.trim().toLowerCase();
+  let visible = 0;
+  document.querySelectorAll("#grid-decl .card").forEach(card=>{
+    const ok = !q || card.dataset.name.includes(q);
+    card.style.display = ok ? "" : "none";
+    if(ok) visible++;
+  });
+  document.getElementById("count-decl").textContent = `${visible} / ${DECLINING.length} növény`;
+  document.getElementById("empty-decl").style.display = visible ? "none" : "";
+}
+document.getElementById("search-decl").addEventListener("input", applyDecl);
+document.getElementById("reset-decl").addEventListener("click", ()=>{
+  document.getElementById("search-decl").value = ""; applyDecl();
+});
+
+/* ---------- szűrés: invazív ---------- */
+function applyInv(){
+  const q    = document.getElementById("search-inv").value.trim().toLowerCase();
+  const szar = document.getElementById("f-szar").value;
+  const eu   = document.getElementById("f-eu").value;
+  let visible = 0;
+  document.querySelectorAll("#grid-inv .card").forEach(card=>{
+    let ok = true;
+    if(q && !card.dataset.name.includes(q)) ok = false;
+    if(szar && card.dataset.szar !== szar) ok = false;
+    if(eu === "yes" && card.dataset.eu !== "true") ok = false;
+    card.style.display = ok ? "" : "none";
+    if(ok) visible++;
+  });
+  document.getElementById("count-inv").textContent = `${visible} / ${INVASIVE.length} növény`;
+  document.getElementById("empty-inv").style.display = visible ? "none" : "";
+}
+["search-inv","f-szar","f-eu"].forEach(id=>{
+  document.getElementById(id).addEventListener("input", applyInv);
+});
+document.getElementById("reset-inv").addEventListener("click", ()=>{
+  document.getElementById("search-inv").value=""; document.getElementById("f-szar").value="";
+  document.getElementById("f-eu").value=""; applyInv();
+});
+
+/* ---------- kattintható címkék ---------- */
+document.addEventListener("click", e=>{
+  const b = e.target.closest(".badge[data-filter]");
+  if(!b) return;
+  const f = b.dataset.filter, v = b.dataset.value;
+  if(f === "eredet"){ document.getElementById("f-eredet").value = v; applyFilters(); }
+  if(f === "toxic"){  document.getElementById("f-toxic").value  = v; applyFilters(); }
+  if(f === "szar"){   document.getElementById("f-szar").value   = v; applyInv(); }
+});
+
+applyFilters(); applyDecl(); applyInv();
+</script>
+</body>
+</html>
