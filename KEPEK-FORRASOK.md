@@ -114,7 +114,8 @@ A megjelenítés a Commons hivatalos Special:FilePath végpontján keresztül t�
 | Japánjuhar | *Acer palmatum* | Kurt Stüber | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/deed.hu) | [Commons](https://commons.wikimedia.org/wiki/File:Acer_palmatum0.jpg) |
 | Lucfenyő | *Picea abies* | Ivar Leidus | [CC BY-SA 3.0 ee](https://creativecommons.org/licenses/by-sa/3.0/ee/deed.hu) | [Commons](https://commons.wikimedia.org/wiki/File:Kuusk_Keila-Paldiski_rdt_%C3%A4%C3%A4res.jpg) |
 | Közönséges nyír | *Betula pendula* | Percita (Flickr) | [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0/deed.hu) | [Commons](https://commons.wikimedia.org/wiki/File:Betula_pendula_Finland.jpg) |
-| Angolperje-gyep („angolpázsit”) | *Lolium perenne* | Rasbak | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/deed.hu) | [Commons](https://commons.wikimedia.org/wiki/File:Lolium_perenne_Engels_raaigras_doorschietend.jpg) |
+| Angolperje-gyep („angolpázsit”) (aszály után) | *Lolium perenne* | Famartin | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/deed.hu) | [Commons](https://commons.wikimedia.org/wiki/File:2022-07-26_10_33_24_Brown%2C_dry_lawn_after_an_extended_period_of_hot_and_dry_weather_along_Seven_Oaks_Lane_in_the_Mountainview_section_of_Ewing_Township%2C_Mercer_County%2C_New_Jersey.jpg) |
+| Angolperje-gyep („angolpázsit”) (frissen nyírva) | *Lolium perenne* | Famartin | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/deed.hu) | [Commons](https://commons.wikimedia.org/wiki/File:2022-06-09_12_22_34_A_freshly_mowed_front_lawn_along_Aquetong_Lane_in_the_Mountainview_section_of_Ewing_Township%2C_Mercer_County%2C_New_Jersey.jpg) |
 | Olajfa | *Olea europaea* | Nickfraser | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/deed.hu) | [Commons](https://commons.wikimedia.org/wiki/File:Olivesfromjordan.jpg) |
 | Leander | *Nerium oleander* | Alvesgaspar | [CC BY 2.5](https://creativecommons.org/licenses/by/2.5/deed.hu) | [Commons](https://commons.wikimedia.org/wiki/File:Nerium_oleander_flowers_leaves.jpg) |
 | Fügekaktusz („medvetalp kaktusz”) | *Opuntia ficus-indica* | YG01 | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.hu) | [Commons](https://commons.wikimedia.org/wiki/File:Dikenli_%C4%B0ncir_(Opuntia_ficus-indica)_Gaziantep_Turkey.IMG_1104.jpg) |
@@ -143,4 +144,4 @@ A megjelenítés a Commons hivatalos Special:FilePath végpontján keresztül t�
 | Kaukázusi medvetalp | *Heracleum mantegazzianum* | Lucas Kendall | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/deed.hu) | [Commons](https://commons.wikimedia.org/wiki/File:Giant_hogweed_in_Dunnyduff_Woods%2C_Keith.jpg) |
 | Afrikai tollborzfű | *Cenchrus setaceus* | Forest & Kim Starr | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/deed.hu) | [Commons](https://commons.wikimedia.org/wiki/File:Starr_040217-0077_Pennisetum_setaceum.jpg) |
 
-Összesen: **133** kép.
+Összesen: **134** kép.

@@ -11,6 +11,7 @@ nézni, mi mikor változott. Ezek a fájlok **nem íródnak felül** — minden 
 | `index-v3-2026-08-17.html` | teljes | Mind a 132 faj, 5 lap. A részletes adatlapok itt kerültek ki: 100 fajra kézzel összeszedni pontatlan lett volna. Kattintásra lenyíló adatvédelmi FB-beágyazás, licenc-deep linkek. |
 | `index-v4-2026-08-17.html` | teljes | Műfű a mediterrán tévút lapon, laponkénti felelősségkizárás és AI-jelölés. |
 | `index-v5-2026-08-17.html` | teljes | A szerző megjegyzése idézőjelben, forrásmegjelöléssel a kártyákon. Visszajelzési felület eltávolítva. |
+| `index-v6-2026-08-17.html` | teljes | Az angolperje-gyep kártyán elhúzható kép-összehasonlító: ugyanaz a lakónegyed frissen nyírva és hat héttel későbbi aszály után. |
 
 ## Következő lépés
 

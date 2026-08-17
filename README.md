@@ -85,11 +85,62 @@ index.html            az oldal (egyetlen, önálló fájl – nincs build lépé
 KEPEK-FORRASOK.md     fajonkénti képforrás-jegyzék (szerző, licenc, eredeti fájl)
 README.md             ez a fájl
 _config.yml           GitHub Pages beállítás (az archiv/ nem kerül ki a weboldalra)
+og-image.png          1200×630 megosztási kép (saját készítésű, nem Wikimedia)
+robots.txt            keresőknek: minden indexelhető + sitemap-hivatkozás
+sitemap.xml           az egyetlen publikus URL a keresőknek
 archiv/               korábbi verziók, változatlanul megőrizve (lásd archiv/README.md)
 ```
 
 Az `archiv/` mappa a repóban megmarad és a GitHubon böngészhető, de a publikált
 weboldalra **nem** kerül ki — ezt a `_config.yml` `exclude` listája intézi.
+
+---
+
+## Karbantartási tudnivalók — figyelem, ha az `index.html` újragenerálódik
+
+> Ez a szakasz annak szól, aki legközelebb hozzányúl az `index.html`-hez
+> (Claude Cowork, Claude Code vagy ember). **Olvasd el, mielőtt felülírod a fájlt.**
+
+Az `index.html` `<head>` szekciója tartalmaz egy **SEO/megosztás blokkot**, ami
+nem a Cowork-ben készült oldalgenerálás része. Ha az `index.html`-t teljes
+egészében újragenerálod, ez a blokk **elveszik**, és attól a ponttól a
+Facebook-megosztás kép nélküli lesz, a Google pedig rossz kanonikus URL-t lát.
+Újragenerálás után **másold vissza**:
+
+```html
+<link rel="canonical" href="https://udvariistvan2016-ui.github.io/klimaallo-kert/">
+<meta property="og:url"        content="https://udvariistvan2016-ui.github.io/klimaallo-kert/">
+<meta property="og:locale"     content="hu_HU">
+<meta property="og:site_name"  content="Klímaálló kert">
+<meta property="og:image"      content="https://udvariistvan2016-ui.github.io/klimaallo-kert/og-image.png">
+<meta property="og:image:width"  content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt"  content="Klímaálló kert – szűrhető növénykalauz, Bardóczi Sándor főtájépítész listája alapján">
+<meta name="twitter:card" content="summary_large_image">
+```
+
+A `<title>`, a `<meta name="description">`, az `og:title` és az `og:description`
+már korábban is benne volt — azokat elég változatlanul hagyni.
+
+### Mi változott a publikáláskor (2026-08-17)
+
+| Változás | Miért |
+|---|---|
+| `_config.yml` új fájl | Az `archiv/` és a `PUBLIKALAS.md` a repóban marad, de a weboldalra nem kerül ki (Jekyll `exclude`). |
+| README „Élő oldal" link | A `FELHASZNALONEV` helyére a valódi GitHub-név került. |
+| `<head>`: canonical + `og:url`/`og:image`/`og:locale`/`og:site_name` + `twitter:card` | Megosztásnál legyen előnézeti kép; a keresőnek egyértelmű a kanonikus cím. |
+| `og-image.png` új fájl | A megosztási kép **szándékosan saját készítésű** (a site színeivel), nem egy Wikimedia-fotó: a CC BY-SA képekhez attribúció kell, amit a Facebook-előnézet nem tud megjeleníteni. Ha átrajzolod, maradjon 1200×630. |
+| `robots.txt`, `sitemap.xml` új fájlok | Semmi nincs tiltva, és a kereső megkapja az egyetlen publikus URL-t. |
+
+Amihez **nem** nyúltunk: a növényadatok (`DATA` objektum), a szűrőlogika, a
+kártyarenderelés és a kép-összehasonlító csúszka — azok maradtak, ahogy a
+Cowork-ben elkészültek.
+
+### Ha változik a repó neve vagy a GitHub-felhasználónév
+
+Négy helyen szerepel beégetve a `https://udvariistvan2016-ui.github.io/klimaallo-kert/`
+cím: `index.html` (canonical + `og:url` + `og:image`), `README.md`,
+`robots.txt`, `sitemap.xml`. Mind a négyet át kell írni.
 
 ---
 
